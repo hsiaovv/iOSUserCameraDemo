@@ -202,8 +202,7 @@
 				TargetAttributes = {
 					6ACAD0771F70F15C002EC8A4 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = 82BQ6MEV72;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					6ACAD08B1F70F15C002EC8A4 = {
 						CreatedOnToolsVersion = 8.3.3;
@@ -425,11 +424,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 82BQ6MEV72;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = iOSUserCameraDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.xiaovv.iOSUserCameraDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -438,11 +438,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 82BQ6MEV72;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = iOSUserCameraDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.xiaovv.iOSUserCameraDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -520,6 +521,7 @@
 				6ACAD0A21F70F15C002EC8A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6ACAD0A31F70F15C002EC8A4 /* Build configuration list for PBXNativeTarget "iOSUserCameraDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +530,7 @@
 				6ACAD0A51F70F15C002EC8A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6ACAD0A61F70F15C002EC8A4 /* Build configuration list for PBXNativeTarget "iOSUserCameraDemoUITests" */ = {
 			isa = XCConfigurationList;
@@ -536,6 +539,7 @@
 				6ACAD0A81F70F15C002EC8A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
