@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ori-TS-0av">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="FPg-U0-tW7">
+            <objects>
+                <navigationController id="Ori-TS-0av" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="FN1-vR-ip6">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="iiK-d2-RBX"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NFd-TW-raQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1247" y="-260"/>
+        </scene>
+        <!--iOSUserCameraDemo-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="iOSUserCameraDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mvz-mL-yEW">
+                                <rect key="frame" x="0.0" y="204" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="JaF-Xs-3nq"/>
+                                </constraints>
+                                <state key="normal" title="UIImagePickerController"/>
+                                <connections>
+                                    <action selector="usePickerController:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KJT-AK-8KX"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4kN-pv-uzC">
+                                <rect key="frame" x="0.0" y="292" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="2t2-c4-Ky8"/>
+                                </constraints>
+                                <state key="normal" title="AVFoundation-拍照"/>
+                                <connections>
+                                    <action selector="useAVFoundationPhoto:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DQW-7k-B9y"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X7x-zi-8Tl">
+                                <rect key="frame" x="0.0" y="380" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="wdH-D6-dhw"/>
+                                </constraints>
+                                <state key="normal" title="AVFoundation-录制视频"/>
+                                <connections>
+                                    <action selector="useAVFoundationVideo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0AU-rT-A7f"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="X7x-zi-8Tl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="3PA-71-f8q"/>
+                            <constraint firstAttribute="trailing" secondItem="4kN-pv-uzC" secondAttribute="trailing" id="LhK-Gl-ylc"/>
+                            <constraint firstItem="X7x-zi-8Tl" firstAttribute="top" secondItem="4kN-pv-uzC" secondAttribute="bottom" constant="44" id="NHO-i5-SXJ"/>
+                            <constraint firstItem="4kN-pv-uzC" firstAttribute="top" secondItem="Mvz-mL-yEW" secondAttribute="bottom" constant="44" id="awg-Ok-hrG"/>
+                            <constraint firstItem="Mvz-mL-yEW" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="d6e-Hn-oSw"/>
+                            <constraint firstAttribute="trailing" secondItem="X7x-zi-8Tl" secondAttribute="trailing" id="rRS-0Z-bJU"/>
+                            <constraint firstItem="Mvz-mL-yEW" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="140" id="tbF-lx-u0m"/>
+                            <constraint firstItem="4kN-pv-uzC" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="vP4-La-hXE"/>
+                            <constraint firstAttribute="trailing" secondItem="Mvz-mL-yEW" secondAttribute="trailing" id="yNW-Aw-aQj"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="iOSUserCameraDemo" id="Lqn-Ko-bfn"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-458.39999999999998" y="-260.41979010494754"/>
+        </scene>
+    </scenes>
+</document>
