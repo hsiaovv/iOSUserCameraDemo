@@ -118,7 +118,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
          AVAuthorizationStatusAuthorized // 已授权，可使用
          */
         
-        switch AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) {
+        switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
             
         case .authorized: // 已授权，可使用
             
@@ -126,7 +126,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
             
         case .notDetermined://进行授权选择
             
-            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted) in
+            AVCaptureDevice.requestAccess(for: AVMediaType.video, completionHandler: { (granted) in
                 
                 if granted {
                     
@@ -165,12 +165,12 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         captureSession?.beginConfiguration()
         
         // CaptureSession 的会话预设,这个地方设置的模式/分辨率大小将影响你后面拍摄照片/视频的大小
-        captureSession?.sessionPreset = AVCaptureSessionPresetHigh
+        captureSession?.sessionPreset = AVCaptureSession.Preset.high
         
         // 添加输入
         do {
             
-            let cameraDeviceInput = try AVCaptureDeviceInput(device: self.cameraWithPosition(.back))
+            let cameraDeviceInput = try AVCaptureDeviceInput(device: self.cameraWithPosition(.back)!)
             
             if (captureSession?.canAddInput(cameraDeviceInput))! {
                 
@@ -180,9 +180,9 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
             }
             
             
-            let audioDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)
+            let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio)
             
-            let audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
+            let audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice!)
             
             if (captureSession?.canAddInput(audioDeviceInput))! {
                 
@@ -227,25 +227,25 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
             // iOS 10 以后 相机视频输出使用 AVCaptureMovieFileOutput
             captureMovieFileOutput = AVCaptureMovieFileOutput()
             
-            if (captureSession?.canAddOutput(captureMovieFileOutput))! {
+            if (captureSession?.canAddOutput(captureMovieFileOutput!))! {
                 
-                captureSession?.addOutput(captureMovieFileOutput)
+                captureSession?.addOutput(captureMovieFileOutput!)
             }
             
         }
         
-        previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
+        previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession!)
         previewLayer?.frame = (self.preview?.bounds)!
-        previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+        previewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         
         //预览图层和视频方向保持一致
         if #available(iOS 10.0, *) {
             
-            captureVideoDataOutput?.connection(withMediaType: AVMediaTypeVideo).videoOrientation = (previewLayer?.connection.videoOrientation)!
+            captureVideoDataOutput?.connection(with: AVMediaType.video)?.videoOrientation = (previewLayer?.connection?.videoOrientation)!
             
         } else {
             
-            captureMovieFileOutput?.connection(withMediaType: AVMediaTypeVideo).videoOrientation = (previewLayer?.connection.videoOrientation)!
+            captureMovieFileOutput?.connection(with: AVMediaType.video)?.videoOrientation = (previewLayer?.connection?.videoOrientation)!
         }
         
         preview?.layer.insertSublayer(self.previewLayer!, at: 0)
@@ -266,7 +266,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
                              AVVideoWidthKey: 720,
                              AVVideoHeightKey: 1280] as [String : Any];
         
-        let assetWriterVideoInput = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: videoSettings)
+        let assetWriterVideoInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: videoSettings)
         
         assetWriterVideoInput.expectsMediaDataInRealTime = true
         
@@ -277,7 +277,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
                              AVSampleRateKey: NSNumber(value: 44100.0),
                              AVNumberOfChannelsKey: NSNumber(value: 2)] as [String : Any]
         
-        let assetWriterAudioInput = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: audioSettings)
+        let assetWriterAudioInput = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: audioSettings)
         assetWriterAudioInput.expectsMediaDataInRealTime = true
         
         self.assetWriterAudioInput = assetWriterAudioInput
@@ -298,7 +298,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         
         do {
             
-            let assetWriter = try AVAssetWriter(url: videoUrl, fileType: AVFileTypeMPEG4)
+            let assetWriter = try AVAssetWriter(url: videoUrl, fileType: AVFileType.mp4)
             
             if assetWriter.canAdd(assetWriterVideoInput) {
                 
@@ -318,7 +318,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         }
     }
     
-    func recordVideo(button: UIButton) {
+    @objc func recordVideo(button: UIButton) {
         
         button.isSelected = !button.isSelected
         
@@ -372,17 +372,17 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
                 
                 let url = URL(fileURLWithPath: NSTemporaryDirectory() + "outPut.mov")
                 
-                captureMovieFileOutput?.startRecording(toOutputFileURL: url, recordingDelegate: self)
+                captureMovieFileOutput?.startRecording(to: url, recordingDelegate: self)
             }
         }
     }
     
     
-    func toggleCamera() {
+    @objc func toggleCamera() {
         
-        var newPostion: AVCaptureDevicePosition
+        var newPostion: AVCaptureDevice.Position
         
-        if self.captureInput?.device.position == AVCaptureDevicePosition.back {
+        if self.captureInput?.device.position == AVCaptureDevice.Position.back {
             
             newPostion = .front
         }else {
@@ -393,13 +393,13 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         
         do {
             
-            let cameraDeviceInput = try AVCaptureDeviceInput(device: self.cameraWithPosition(newPostion))
+            let cameraDeviceInput = try AVCaptureDeviceInput(device: self.cameraWithPosition(newPostion)!)
             
             self.sessionQueue.async {
                 
                 self.captureSession?.beginConfiguration()
                 
-                self.captureSession?.removeInput(self.captureInput)
+                self.captureSession?.removeInput(self.captureInput!)
                 
                 if (self.captureSession?.canAddInput(cameraDeviceInput))! {
                     
@@ -417,7 +417,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         }
     }
     
-    func changeTorch(button: UIButton) {
+    @objc func changeTorch(button: UIButton) {
         
         button.isSelected = !button.isSelected
         
@@ -428,9 +428,9 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
                 try self.captureInput?.device.lockForConfiguration()
                 
                 if button.isSelected {
-                    self.captureInput?.device.torchMode = AVCaptureTorchMode.on
+                    self.captureInput?.device.torchMode = AVCaptureDevice.TorchMode.on
                 }else {
-                    self.captureInput?.device.torchMode = AVCaptureTorchMode.off
+                    self.captureInput?.device.torchMode = AVCaptureDevice.TorchMode.off
                 }
                 
             } catch let error as NSError {
@@ -443,16 +443,16 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         
     }
     
-    func closeClick() {
+    @objc func closeClick() {
         
         self.dismiss(animated: true, completion: nil)
     }
     
-    func cameraWithPosition(_ position: AVCaptureDevicePosition) -> AVCaptureDevice? {
+    func cameraWithPosition(_ position: AVCaptureDevice.Position) -> AVCaptureDevice? {
         
         if #available(iOS 10.0, *) {
             
-            let devices = AVCaptureDeviceDiscoverySession(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: position).devices!
+            let devices = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera], mediaType: AVMediaType.video, position: position).devices
             
             for device in devices {
                 
@@ -464,7 +464,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
             
         } else {
             
-            let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) as! [AVCaptureDevice]
+            let devices = AVCaptureDevice.devices(for: AVMediaType.video) 
             
             for device in devices {
                 
@@ -483,7 +483,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
     
     
     // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate,AVCaptureAudioDataOutputSampleBufferDelegate
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         print("#function--\(#function)")
         
@@ -503,7 +503,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         }
         
         // 视频数据
-        if connection == captureVideoDataOutput?.connection(withMediaType: AVMediaTypeVideo) {
+        if connection == captureVideoDataOutput?.connection(with: AVMediaType.video) {
             
             let videoDataOutputQueue = DispatchQueue(label: "com.xiaovv.videoDataOutputQueue")
             
@@ -518,7 +518,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         }
         
         // 音频数据
-        if connection == captureAudioDataOutput?.connection(withMediaType: AVMediaTypeAudio) {
+        if connection == captureAudioDataOutput?.connection(with: AVMediaType.audio) {
             
             let audioDataOutputQueue = DispatchQueue(label: "com.xiaovv.audioDataOutputQueue")
             
@@ -532,21 +532,20 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
         }
         
         objc_sync_exit(self)
-        
     }
     
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didDrop sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+    func captureOutput(_ captureOutput: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         
     }
     
     // MARK: - AVCaptureFileOutputRecordingDelegate
-    func capture(_ captureOutput: AVCaptureFileOutput!, didStartRecordingToOutputFileAt fileURL: URL!, fromConnections connections: [Any]!) {
+    func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
         
         print("开始录制")
     }
-    
-    func capture(_ captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAt outputFileURL: URL!, fromConnections connections: [Any]!, error: Error!) {
+
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         
         print("停止录制")
         
@@ -564,7 +563,7 @@ class UseAVFoundationVideoController: UIViewController,UIGestureRecognizerDelega
     // MARK: - UISaveVideoAtPathToSavedPhotosAlbum
     
     //UISaveVideoAtPathToSavedPhotosAlbum 保存视频之后的回调，判断视频是否保存成功，方法名必须这样写
-    func video(_ videoPath: String,
+    @objc func video(_ videoPath: String,
                didFinishSavingWithError error: NSError?,
                contextInfo: UnsafeRawPointer) {
         

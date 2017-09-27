@@ -70,7 +70,7 @@ class UseUIImagePickerController: UIViewController, UINavigationControllerDelega
         return UIImagePickerController.isSourceTypeAvailable(sourceType)
     }
     
-    func showPhotoLibPickerController() {
+    @objc func showPhotoLibPickerController() {
         
         //判断设备是否支持数据来源
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -103,7 +103,7 @@ class UseUIImagePickerController: UIViewController, UINavigationControllerDelega
         }
     }
     
-    func showCommonPickerController() {
+    @objc func showCommonPickerController() {
         
         //记得添加隐私权限
         
@@ -158,7 +158,7 @@ class UseUIImagePickerController: UIViewController, UINavigationControllerDelega
         
     }
     
-    func showCustomPickerController() {
+    @objc func showCustomPickerController() {
         
         //判断设备是否支持数据来源
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -265,19 +265,19 @@ class UseUIImagePickerController: UIViewController, UINavigationControllerDelega
     }
     
     // 开始录制视频
-    func startCapture() {
+    @objc func startCapture() {
         
         self.pickerController?.stopVideoCapture()
         self.pickerController?.startVideoCapture()
     }
     
     // 停止录制视频
-    func stopCapture() {
+    @objc func stopCapture() {
         
         self.pickerController?.stopVideoCapture()
     }
     
-    func swithCaptureMode() {
+    @objc func swithCaptureMode() {
         
         if self.pickerController?.cameraCaptureMode == UIImagePickerControllerCameraCaptureMode.video {
             
@@ -296,13 +296,13 @@ class UseUIImagePickerController: UIViewController, UINavigationControllerDelega
         }
     }
     
-    func takePic() {
+    @objc func takePic() {
         
         self.pickerController?.takePicture()
     }
     
     
-    func dissmisController() {
+    @objc func dissmisController() {
         
         self.pickerController?.dismiss(animated: true, completion: nil)
     }
@@ -387,7 +387,7 @@ class UseUIImagePickerController: UIViewController, UINavigationControllerDelega
     
     
     // 保存照片之后的回调，判断照片是否保存成功，方法名必须这样写
-    func image(_ image: UIImage,
+    @objc func image(_ image: UIImage,
                didFinishSavingWithError error: NSError?,
                contextInfo: UnsafeRawPointer) {
         
@@ -404,7 +404,7 @@ class UseUIImagePickerController: UIViewController, UINavigationControllerDelega
     }
     
     // 保存视频之后的回调，判断视频是否保存成功，方法名必须这样写
-    func video(_ videoPath: String,
+    @objc func video(_ videoPath: String,
                didFinishSavingWithError error: NSError?,
                contextInfo: UnsafeRawPointer) {
         

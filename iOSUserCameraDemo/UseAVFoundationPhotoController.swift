@@ -43,9 +43,9 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
     }()
     
     // 使用AVCapturePhotoOutput 之后 FlashMode 需要从 AVCapturePhotoSettings 设置，之前的 AVCaptureDevice 设置会被忽略
-    var currentFlashMode: AVCaptureFlashMode = {
+    var currentFlashMode: AVCaptureDevice.FlashMode = {
         
-        return AVCaptureFlashMode.auto
+        return AVCaptureDevice.FlashMode.auto
     }()
     
     //
@@ -140,7 +140,7 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
          AVAuthorizationStatusAuthorized // 已授权，可使用
          */
         
-        switch AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) {
+        switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
             
         case .authorized: // 已授权，可使用
             
@@ -148,7 +148,7 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
             
         case .notDetermined://进行授权选择
             
-            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted) in
+            AVCaptureDevice.requestAccess(for: AVMediaType.video, completionHandler: { (granted) in
                 
                 if granted {
                     
@@ -187,12 +187,12 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
         captureSession?.beginConfiguration()
         
         // CaptureSession 的会话预设,这个地方设置的模式/分辨率大小将影响你后面拍摄照片/视频的大小
-        captureSession?.sessionPreset = AVCaptureSessionPresetPhoto
+        captureSession?.sessionPreset = AVCaptureSession.Preset.photo
         
         // 添加输入
         do {
             // 初始使用后置相机
-            let cameraDeviceInput = try AVCaptureDeviceInput(device: self.cameraWithPosition(.back))
+            let cameraDeviceInput = try AVCaptureDeviceInput(device: self.cameraWithPosition(.back)!)
             
             if (captureSession?.canAddInput(cameraDeviceInput))! {
                 
@@ -225,24 +225,24 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
             captureStillImageOutput = AVCaptureStillImageOutput()
             captureStillImageOutput?.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
             
-            if (captureSession?.canAddOutput(captureStillImageOutput))! {
+            if (captureSession?.canAddOutput(captureStillImageOutput!))! {
                 
-                captureSession?.addOutput(captureStillImageOutput)
+                captureSession?.addOutput(captureStillImageOutput!)
             }
         }
         
-        previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
+        previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession!)
         previewLayer?.frame = (self.preview?.bounds)!
-        previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+        previewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         
         //预览图层和视频方向保持一致
         if #available(iOS 10.0, *) {
             
-            capturePhotoOutput?.connection(withMediaType: AVMediaTypeVideo).videoOrientation = (previewLayer?.connection.videoOrientation)!
+            capturePhotoOutput?.connection(with: AVMediaType.video)?.videoOrientation = (previewLayer?.connection?.videoOrientation)!
             
         } else {
             
-            captureStillImageOutput?.connection(withMediaType: AVMediaTypeVideo).videoOrientation = (previewLayer?.connection.videoOrientation)!
+            captureStillImageOutput?.connection(with: AVMediaType.video)?.videoOrientation = (previewLayer?.connection?.videoOrientation)!
         }
         
         preview?.layer.insertSublayer(self.previewLayer!, at: 0)
@@ -255,7 +255,7 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
         }
     }
     
-    func takePhoto() {
+    @objc func takePhoto() {
         
         if #available(iOS 10.0, *) {// 这里iOS 10 拍摄LivePhoto
             
@@ -285,9 +285,9 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
             
         } else {
             
-            let connection = captureStillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
+            let connection = captureStillImageOutput?.connection(with: AVMediaType.video)
             
-            captureStillImageOutput?.captureStillImageAsynchronously(from: connection, completionHandler: { (buffer, error) in
+            captureStillImageOutput?.captureStillImageAsynchronously(from: connection!, completionHandler: { (buffer, error) in
                 
                 guard error == nil else {
                     
@@ -295,7 +295,7 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
                     return
                 }
                 
-                if let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer),
+                if let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer!),
                     let image = UIImage(data: imageData){
                     
                     UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)),nil)
@@ -306,11 +306,11 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
         }
     }
     
-    func toggleCamera() {
+    @objc func toggleCamera() {
         
-        var newPostion: AVCaptureDevicePosition
+        var newPostion: AVCaptureDevice.Position
         
-        if self.captureInput?.device.position == AVCaptureDevicePosition.back {
+        if self.captureInput?.device.position == AVCaptureDevice.Position.back {
             
             newPostion = .front
         }else {
@@ -320,13 +320,13 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
         
         do {
             
-            let newDeviceInput = try AVCaptureDeviceInput(device: self.cameraWithPosition(newPostion))
+            let newDeviceInput = try AVCaptureDeviceInput(device: self.cameraWithPosition(newPostion)!)
             
             self.sessionQueue.async {
                 
                 self.captureSession?.beginConfiguration()
                 
-                self.captureSession?.removeInput(self.captureInput)
+                self.captureSession?.removeInput(self.captureInput!)
                 
                 if (self.captureSession?.canAddInput(newDeviceInput))! {
                     
@@ -344,18 +344,18 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
         }
     }
     
-    func changeflash(button: UIButton) {
+    @objc func changeflash(button: UIButton) {
         
         if (self.captureInput?.device.hasFlash)! {// 判读是否有闪关灯
             
             if #available(iOS 10.0, *) {
                 
-                if currentFlashMode == AVCaptureFlashMode.off {
+                if currentFlashMode == AVCaptureDevice.FlashMode.off {
                     
                     currentFlashMode = .on
                     button.setTitle("闪光灯：开启", for: .normal)
                     
-                }else if currentFlashMode == AVCaptureFlashMode.on {
+                }else if currentFlashMode == AVCaptureDevice.FlashMode.on {
                     
                     currentFlashMode = .auto
                     button.setTitle("闪光灯：自动", for: .normal)
@@ -374,13 +374,13 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
                     
                     if let flashMode = self.captureInput?.device.flashMode {
                         
-                        if flashMode == AVCaptureFlashMode.off {
+                        if flashMode == AVCaptureDevice.FlashMode.off {
                             
                             self.captureInput?.device.flashMode = .on
                             
                             button.setTitle("闪光灯：开启", for: .normal)
                             
-                        }else if flashMode == AVCaptureFlashMode.on {
+                        }else if flashMode == AVCaptureDevice.FlashMode.on {
                             
                             self.captureInput?.device.flashMode = .auto
                             
@@ -404,23 +404,23 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
         
     }
     
-    func focusTap(tapGesture: UITapGestureRecognizer) {
+    @objc func focusTap(tapGesture: UITapGestureRecognizer) {
         
         let location = tapGesture.location(in: self.preview)
         
         focusImageAnimateWithCenterPoint(point: location)
         
-        let devicePoint = previewLayer?.captureDevicePointOfInterest(for: location)
+        let devicePoint = previewLayer?.captureDevicePointConverted(fromLayerPoint: location)
         
-        focusWithMode(AVCaptureFocusMode.autoFocus, exposeMode: AVCaptureExposureMode.continuousAutoExposure, devicePoint: devicePoint)
+        focusWithMode(AVCaptureDevice.FocusMode.autoFocus, exposeMode: AVCaptureDevice.ExposureMode.continuousAutoExposure, devicePoint: devicePoint)
     }
     
-    func closeClick() {
+    @objc func closeClick() {
         
         self.dismiss(animated: true, completion: nil)
     }
     
-    func focusWithMode(_ focusMode:AVCaptureFocusMode, exposeMode:AVCaptureExposureMode,devicePoint:CGPoint?) {
+    func focusWithMode(_ focusMode:AVCaptureDevice.FocusMode, exposeMode:AVCaptureDevice.ExposureMode,devicePoint:CGPoint?) {
         
         if let cameraDevice = self.captureInput?.device {
             
@@ -451,11 +451,11 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
         }
     }
     
-    fileprivate func cameraWithPosition(_ position: AVCaptureDevicePosition) -> AVCaptureDevice? {
+    fileprivate func cameraWithPosition(_ position: AVCaptureDevice.Position) -> AVCaptureDevice? {
         
         if #available(iOS 10.0, *) {
             
-            let devices = AVCaptureDeviceDiscoverySession(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: position).devices!
+            let devices = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera], mediaType: AVMediaType.video, position: position).devices
             
             for device in devices {
                 
@@ -467,7 +467,7 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
             
         } else {
             
-            let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) as! [AVCaptureDevice]
+            let devices = AVCaptureDevice.devices(for: AVMediaType.video) 
             
             for device in devices {
                 
@@ -506,12 +506,12 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
     }
     
     // MARK: - AVCapturePhotoCaptureDelegate
-    func capture(_ captureOutput: AVCapturePhotoOutput, didCapturePhotoForResolvedSettings resolvedSettings: AVCaptureResolvedPhotoSettings) {
+    func photoOutput(_ output: AVCapturePhotoOutput, didCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
         
         print(#function)
     }
     
-    func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
         
         print(#function)
         
@@ -526,7 +526,7 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
     }
     
     
-    func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration: CMTime, photoDisplay photoDisplayTime: CMTime, resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration: CMTime, photoDisplayTime: CMTime, resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
         
         print(#function)
         
@@ -537,11 +537,10 @@ class UseAVFoundationPhotoController: UIViewController,UIGestureRecognizerDelega
         }
         
         self.livePhotoMovieURL = outputFileURL
-        
     }
     
     // UIImageWriteToSavedPhotosAlbum 保存照片之后的回调，判断视频是否保存成功，方法名必须这样写
-    func image(_ image: UIImage,
+    @objc func image(_ image: UIImage,
                didFinishSavingWithError error: NSError?,
                contextInfo: UnsafeRawPointer) {
         
